@@ -1,0 +1,103 @@
+
+Användarhandledning (den korta versionen)
+
+1. användare skickar mail till 'listan'.
+	1.1. användare får ett automatsvar.
+	1.2. admins får mail (med 'S' som defaultcommando)
+
+2. admin svarar på mailet.
+	2.1 mail går ut till alla på distlistan+admins.
+
+
+[mupport#20000901.2]
+[mupport#20000901.2:S]
+
+Kommandon skickas i subject (går ej ut till de vanliga användarna):
+	D - Discuss mode.
+	S - Solved
+	C - Close (ärendet stängs men utan användarsvar)
+	O - Open 
+	N - Note (Som 'D' fast bara 1 gång)
+	A&lt;userregexp&gt; - Assign to user.
+	T - Take job
+	U - Untake
+	F - Force
+	E(TA|T|) - E20001012 | E5d | E1w | more?
+
+Exempel:
+	Subject: Re: [mupport#20000901.2:S] Janne till supporten.
+		Solve.
+	Subject: Re: [mupport#20000901.2:T] Janne till supporten.
+		Take.
+	Subject: Re: [mupport#20000901.2:O:Anikke] Janne till supporten.
+		Open and assign to nikke.
+
+Specialare: Om något av kommandona avslutas med '!' så kommer det inte
+att gå ut någon mail till användaren dock så kommer adminlistan att få
+ett 'notify'-mail med vilka kommandon som körts.
+
+Om man svarar på ett call som är stängt (och i framtiden ej ägare på
+heller) så kommer det ett mail tillbaka till användaren med *REJECTED*
+först i subject. Detta Forcas genom att bounca mailet tillbaka till
+listan. Eller at man har med 'F' som commando.
+
+Det går också att ha flera kommandon efter varandra genom att separera
+dem med ':'.
+
+
+Om man vill skapa ett nytt case som admin och vill ha med en användare
+görs detta genom att skicka ett mail till support på formen:
+
+support+user{a}domain.com@acc.umu.se
+support+user{a}domain.com#otheruser{a}otherdomian.com@acc.umu.se
+support+user{a}domain.com#otheruser{a}otherdomian.com#...@acc.umu.se
+
+
+Ett cmd-interface för att lista case och likande. 
+Namn 'mq' (~must/minimust/mq) och klarar:
+
+Available commands: (not up to date)
+        members              - List members.
+        listopen [u]         - List open cases. (owned by user)
+        list [u]             - List _all_ cases. (owned by user)
+        info &lt;c&gt; [!]         - info on a case.
+        assign &lt;c&gt; &lt;u&gt;       - assign &lt;c&gt; to &lt;u&gt;
+        close &lt;c&gt; [!]        - close &lt;c&gt;
+        solve &lt;c&gt; [!]        - solve &lt;c&gt;
+        take &lt;c&gt; [!]         - take &lt;c&gt; 
+	eta &lt;c&gt; &lt;t&gt; [!]      - eta 
+        discuss &lt;c&gt;          - set discuss mode on &lt;c&gt;
+        untake &lt;c&gt; [!]       - untake &lt;c&gt;
+        mutt &lt;c&gt;             - mutt:a &lt;c&gt;
+        pine &lt;c&gt;             - pine:a &lt;c&gt;
+
+Kommando quickref:
+
+	C -> status=close, owner=$fromadress
+	O -> status=open, owner=$fromadress
+	A -> status=open if closed, owner=$newowner
+	T -> status=open if closed, owner=$fromadress
+	U -> status=open if closed, owner=unassigned
+	D -> status=discuss (hanteras som open)
+	N -> Skicka bara till "admins".
+
+
+For list admins only
+--------------------
+
+1. Lägg till en ny användare till listan:
+	$EDITOR list/$list.cfg
+	lägg till en ny ra till %listmembers:
+		'bigfoot@acc.umu.se'  => 'copy,fot@acc.umu.se',
+		^- ovan betyder att användaren får en kopia på sina
+                   egna inlägg och att fot@acc.umu.se är samma användare.
+
+		'nikke@acc.umu.se' => 'nikke@ing.umu.se'
+		^- Ovan säger att nikke@ing är samma person som nikke@acc.
+
+	Se även till att användaren är med i rätt grupp så han/hon kan
+	_läsa_ i list-katalogen (ex. Gruppen support för Supportlistan på ACC)
+
+Frågor till must@acc.umu.se =)
+
+/Fot

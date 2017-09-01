@@ -1,0 +1,124 @@
+#!/usr/local/bin/perl 
+
+use Time::Local;
+
+my $sendmail = "/usr/lib/sendmail";
+#my $sendmail = "cat -;echo";
+
+
+# cfg #
+local($basepath) = '/home/projects/must/minimust/';
+# cfg #
+
+my($listcfg) = shift @ARGV;
+my($listcmd) = shift @ARGV;
+
+if(!defined $listcfg) {
+	print "Available lists:\n";
+	foreach(<$basepath/list/*>) {
+		if(-d $_ && -r "$_.cfg") {
+			/[^\/]+$/;
+			print "\t$&\n";
+		}
+	}
+	exit;
+}
+
+my($listcfgpath) = "/home/projects/must/minimust/list/$listcfg.cfg";
+
+die "'$listcfgpath' does not exist...\n" unless -f $listcfgpath;
+
+local(%listmembers,$list,$listalias,$listname,$defaultadmincmd,$listpath,$firstmsg);
+
+#------------- Read Config ---------------#
+my($ret);
+unless($ret = do $listcfgpath) {
+	die "couldn't parse $listcfgpath: $@" if $@;
+	die "couldn't do $listcfgpath: $!"    unless defined $ret;
+	die "couldn't run $listcfgpath"       unless $ret;
+}
+#------------- Read Config ---------------#
+
+if($listcmd eq 'daily') {
+	my($datestr) = scalar localtime(time);
+	my($head) = <<EOM;
+To: $listname <$list>
+From: $listname <$list>
+MIME-Version: 1.0
+Subject: $listname.daily ($datestr)
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
+X-Mailer: $version
+
+EOM
+	foreach(keys %listmembers) {
+		my($p) = 0;
+		my($gnu);
+		$gnu=`/home/projects/must/minimust/mq $listcfg list $_`;
+		if(length $gnu) {
+			open(MAIL,"|$sendmail $_")||die "Can't mail...";
+			print MAIL $head;
+			print MAIL "Hello $_:\n\n";
+			$p = 1;
+			print MAIL "Your open cases:\n$gnu";
+		}
+		$gnu = "";
+		if($listmembers{$_} !~ /\bnodist\b/) {
+			$gnu=`/home/projects/must/minimust/mq $listcfg list unassign`;
+		}
+		if(length $gnu && !$p) {
+			open(MAIL,"|$sendmail $_")||die "Can't mail...";
+			print MAIL $head;
+			print MAIL "Hello $_:\n";
+			$p = 1;
+		}
+		print MAIL "\nUnassigned cases:\n$gnu" if length $gnu;
+		close(MAIL);
+	}
+	exit;
+}
+if($listcmd eq 'weekly') {
+	print STDERR "Not implemented yet =)\n";
+	getweekid();
+	exit;
+}
+die "No command ?\n";
+
+# EOF
+
+sub findlastweek {
+	my $wday = (localtime(time))[6];
+	my($starttime) = time-60*60*24*($wday+6);
+	my(@result);
+	for(0..6) {
+		my($y,$m,$d) = (localtime($starttime))[5,4,3];
+		$y += 1900;
+		$m ++;
+		push @result,sprintf("%4d%02d%02d",$y,$m,$d);
+		$starttime += 60*60*24;
+	}
+	return @result;
+}
+
+sub getweekid {
+	my(@week) = findlastweek();
+
+	foreach my $w (keys %weekmon) {
+		for my $i (<$basepath/list/$listcfg/*/*.status>,
+			<$basepath/list/$listcfg/*.status>) {
+			/([^\/]+)\.status$/;
+			my($ett) = $1;
+			print "$ett\n" if checkit($_);
+		}
+	}
+}
+
+sub checkit {
+	my($path) = @_;
+	/([^\/]+)\.status$/;
+}
+
+
+
+
+
