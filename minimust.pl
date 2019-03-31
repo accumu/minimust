@@ -108,6 +108,15 @@ if ($bogofilter_status == 0) {
 Debug("Parse header");
 #------------- Parse header ---------------#
 my($header) = new MIME::Head (\@head);
+
+# First of all remove every possible dkim related headers.
+# Must rewrites headers and breaks dkim.
+$header->delete('DKIM-Signature');
+$header->delete('Authentication-Results');
+$header->delete('ARC-Authentication-Results');
+$header->delete('ARC-Seal');
+$header->delete('ARC-Message-Signature');
+
 my $tempsubj = $header->get('Subject');
 $tempsubj =~ s/\r\n +/ /gs;
 $tempsubj =~ s/\r +/ /gs;
