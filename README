@@ -48,9 +48,9 @@ dem med ':'.
 Om man vill skapa ett nytt case som admin och vill ha med en användare
 görs detta genom att skicka ett mail till support på formen:
 
-support+user{a}domain.com@acc.umu.se
-support+user{a}domain.com#otheruser{a}otherdomian.com@acc.umu.se
-support+user{a}domain.com#otheruser{a}otherdomian.com#...@acc.umu.se
+support+user{a}domain.com@example.com
+support+user{a}domain.com#otheruser{a}otherdomian.com@example.com
+support+user{a}domain.com#otheruser{a}otherdomian.com#...@example.com
 
 
 Ett cmd-interface för att lista case och likande. 
@@ -88,16 +88,16 @@ For list admins only
 1. Lägg till en ny användare till listan:
 	$EDITOR list/$list.cfg
 	lägg till en ny ra till %listmembers:
-		'bigfoot@acc.umu.se'  => 'copy,fot@acc.umu.se',
+		'bigfoot@example.com'  => 'copy,fot@example.com',
 		^- ovan betyder att användaren får en kopia på sina
-                   egna inlägg och att fot@acc.umu.se är samma användare.
+                   egna inlägg och att fot@example.com är samma användare.
 
-		'nikke@acc.umu.se' => 'nikke@ing.umu.se'
-		^- Ovan säger att nikke@ing är samma person som nikke@acc.
+		'nikke@example.com' => 'nicke@example.com'
+		^- Ovan säger att nikke@example.com är samma person som nicke@example.com.
 
 	Se även till att användaren är med i rätt grupp så han/hon kan
 	_läsa_ i list-katalogen (ex. Gruppen support för Supportlistan på ACC)
 
-Frågor till must@acc.umu.se =)
+Frågor till must@accum.se =)
 
 /Fot
