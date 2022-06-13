@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl -w
 #
-# Minimust is created by Magnus Jonsson <bigfoot@acc.umu.se>
-# Some additional code by Markus Mårtensson <mortis@acc.umu.se>
+# Minimust is created by Magnus Jonsson <bigfoot@accum.se>
+# Some additional code by Markus Mårtensson <mortis@accum.se>
 #
 
 use IPC::Open2;
@@ -12,11 +12,11 @@ use Encode;
 
 my($debug) = 0;
 my($version) = 'MiniMust 0.1a';
-local($domain) = "acc.umu.se";
-#my($sendmail) = '/usr/lib/sendmail -O DeliveryMode=b -fmust@acc.umu.se';
+local($domain) = "accum.se";
+#my($sendmail) = '/usr/lib/sendmail -O DeliveryMode=b -fmust@accum.se';
 # -oi is "ignore single . on line, != eof"
 my($sendmail) = "/usr/lib/sendmail -oi -fmust\@$domain";
-my($url) = "http://www.acc.umu.se/home/must/minimust/";
+my($url) = "http://www.accum.se/home/must/minimust/";
 local($verify_emails) = 0;  # sendmail -v -bv must be supported
 
 my($listcfg) = shift @ARGV;
@@ -172,7 +172,7 @@ my($tuser,$tdomain) = split(/\@/,$list);
 my(@extrato);
 
 #
-# support+user{a}domain.com#otheruser{a}otherdomian.com@acc.umu.se
+# support+user{a}domain.com#otheruser{a}otherdomian.com@example.com
 #
 if(length($tuser) && length($tdomain)) {
 	foreach my $a (keys %addresses) {
